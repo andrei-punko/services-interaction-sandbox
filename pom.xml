@@ -13,5 +13,6 @@
   <modules>
     <module>facade-service</module>
     <module>articles-service</module>
+    <module>coverage-report</module>
   </modules>
 </project>

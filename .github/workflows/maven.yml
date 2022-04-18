@@ -27,6 +27,7 @@ jobs:
       uses: cicirello/jacoco-badge-generator@v2
       with:
         generate-branches-badge: true
+        jacoco-csv-file: coverage-report/target/site/jacoco-aggregate/jacoco.csv
 
     - name: Commit the badge (if it changed)
       run: |
@@ -42,4 +43,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: jacoco-report
-        path: target/site/jacoco/
+        path: coverage-report/target/site/jacoco-aggregate/
