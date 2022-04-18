@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: "Service 1"
+
+server:
+  port: 9081
+
+service2:
+  url: "http://localhost:9082"
+  articles-url: "${service2.url}/api/v1/articles"
