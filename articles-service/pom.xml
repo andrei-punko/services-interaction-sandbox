@@ -10,10 +10,10 @@
 	</parent>
 
 	<groupId>by.andd3dfx</groupId>
-	<artifactId>service-2</artifactId>
+	<artifactId>articles-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>service-2</name>
+	<name>articles-service</name>
 
 	<properties>
 		<java.version>11</java.version>
