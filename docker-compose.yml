@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:12-alpine
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: articles-db
+      POSTGRES_USER: article-db-user
+      POSTGRES_PASSWORD: articles-db-password
+
+  service-1:
+    build: ./facade-service
+    restart: always
+    ports:
+      - "9081:9081"
+    depends_on:
+      - articles-service
+    environment:
+      SERVICE2_URL: 'http://articles-service:9082'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9081/health"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+
+  articles-service:
+    build: ./articles-service
+    restart: always
+    ports:
+      - "9082:9082"
+    depends_on:
+      - postgres
+    environment:
+      DB_URL: 'jdbc:postgresql://postgres:5432/articles-db'
+      DB_USER: article-db-user
+      DB_PASSWORD: articles-db-password
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9082/health"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
