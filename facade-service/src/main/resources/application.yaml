@@ -6,5 +6,10 @@ server:
   port: 9081
 
 service2:
-  url: "http://localhost:9082"
+  url: "https://localhost:9082"
   articles-url: "${service2.url}/api/v1/articles"
+
+trust:
+  store:
+    location: "classpath:keystore/andd3dfx.p12"
+    password: "andreika"
