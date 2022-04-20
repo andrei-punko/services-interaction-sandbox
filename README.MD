@@ -1,15 +1,47 @@
 
-# Example of services interaction when one of them protected by certificate
+# Interaction of services when one of them protected by certificate
 
-## Make call to protected article-service using curl (from _cert folder)
+## How to build
+```
+mvn clean install
+```
+
+## How to run
+
+### How to run both services
+```
+articles-service/run_via_maven.bat
+facade-service/run_via_maven.bat
+```
+
+### How to run both services (Facade Service will make UNSECURE calls to Articles Service)
+```
+articles-service/run_via_maven.bat
+facade-service/run_via_maven-unsecure_calls.bat
+```
+
+### How to run both services in Docker containers
+    docker-compose up
+
+### How to run both services in Docker containers with rebuild service image
+    docker-compose up --build --force-recreate --no-deps
+
+### Stop and cleanup started containers
+    docker-compose down
+
+## How to make calls
+
+### Make call to protected Article Service using curl (from _cert folder)
 ```
 curl -v \
   --cacert andd3dfx.crt \
   --key andd3dfx.key \
   https://localhost:9082/api/v1/articles
 ```
+Use certs from `issued-for-localhost` folder in case of run via bat-scripts,
+or certs from `issued-for-articles-service` folder in case of run via Docker Compose
 
-## Make call to facade-service using curl (from _cert folder)
+### Make call to Facade Service using curl
 ```
 curl http://localhost:9081/api/v1/articles
 ```
@@ -53,9 +85,3 @@ openssl pkcs12 -in andd3dfx.p12 -nocerts -out andd3dfx.key
 openssl pkcs12 -in andd3dfx.p12 -clcerts -nokeys -out andd3dfx.crt
 ```
 (used 'andreika' as a password for all steps)
-
-## Start application in Docker container (vs Postgres DB in Docker):
-    docker-compose up
-
-## Start application in Docker container (vs Postgres DB in Docker) with rebuild service image:
-    docker-compose up --build --force-recreate --no-deps
