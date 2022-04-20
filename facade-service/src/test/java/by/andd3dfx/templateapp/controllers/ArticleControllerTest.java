@@ -39,6 +39,8 @@ import org.springframework.web.context.WebApplicationContext;
 @WebAppConfiguration
 class ArticleControllerTest {
 
+    private final String ARTICLES_BASE_ADDRESS = "https://localhost:9082/api/v1/articles";
+
     private MockMvc mockMvc;
 
     @Autowired
@@ -71,7 +73,7 @@ class ArticleControllerTest {
             .dateCreated(LocalDateTime.now())
             .dateUpdated(LocalDateTime.now())
             .build();
-        when(restTemplate.postForObject("http://localhost:9082/api/v1/articles", articleDto, ArticleDto.class))
+        when(restTemplate.postForObject(ARTICLES_BASE_ADDRESS, articleDto, ArticleDto.class))
             .thenReturn(createdArticleDto);
 
         mockMvc.perform(post("/api/v1/articles")
@@ -273,7 +275,7 @@ class ArticleControllerTest {
         final Long ARTICLE_ID = 123L;
         var exception = new HttpClientErrorException(HttpStatus.NOT_FOUND);
         Mockito.doThrow(exception)
-            .when(restTemplate).delete("http://localhost:9082/api/v1/articles/" + ARTICLE_ID);
+            .when(restTemplate).delete(ARTICLES_BASE_ADDRESS + "/" + ARTICLE_ID);
 
         mockMvc.perform(delete("/api/v1/articles/" + ARTICLE_ID)
                 .contentType(APPLICATION_JSON))
@@ -286,7 +288,7 @@ class ArticleControllerTest {
         ArticleDto articleDto = ArticleDto.builder()
             .id(ARTICLE_ID)
             .build();
-        when(restTemplate.getForObject("http://localhost:9082/api/v1/articles/" + ARTICLE_ID, ArticleDto.class))
+        when(restTemplate.getForObject(ARTICLES_BASE_ADDRESS + "/" + ARTICLE_ID, ArticleDto.class))
             .thenReturn(articleDto);
 
         mockMvc.perform(get("/api/v1/articles/" + ARTICLE_ID)
@@ -300,7 +302,7 @@ class ArticleControllerTest {
     public void readAbsentArticle() throws Exception {
         final Long ARTICLE_ID = 123L;
         var exception = new HttpClientErrorException(HttpStatus.NOT_FOUND);
-        Mockito.when(restTemplate.getForObject("http://localhost:9082/api/v1/articles/" + ARTICLE_ID, ArticleDto.class))
+        Mockito.when(restTemplate.getForObject(ARTICLES_BASE_ADDRESS + "/" + ARTICLE_ID, ArticleDto.class))
             .thenThrow(exception);
 
         mockMvc.perform(get("/api/v1/articles/" + ARTICLE_ID)
@@ -320,7 +322,7 @@ class ArticleControllerTest {
             .totalElements(10)
             .build();
 
-        final String url = String.format("http://localhost:9082/api/v1/articles?page=%d&size=%d", pageNumber, pageSize);
+        final String url = String.format(ARTICLES_BASE_ADDRESS + "?page=%d&size=%d", pageNumber, pageSize);
         Mockito.when(restTemplate.getForObject(url, Object.class))
             .thenReturn(pageResult);
 
@@ -381,7 +383,7 @@ class ArticleControllerTest {
             .build();
         var exception = new HttpClientErrorException(HttpStatus.NOT_FOUND);
         Mockito.when(
-                restTemplate.patchForObject("http://localhost:9082/api/v1/articles/" + ARTICLE_ID, articleUpdateDto,
+                restTemplate.patchForObject(ARTICLES_BASE_ADDRESS + "/" + ARTICLE_ID, articleUpdateDto,
                     String.class))
             .thenThrow(exception);
 
