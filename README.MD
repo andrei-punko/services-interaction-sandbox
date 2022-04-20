@@ -1,6 +1,14 @@
 
 # Interaction of services when one of them protected by certificate
 
+## Short Info
+- Article Service with REST endpoints protected by certificate
+- Facade Service with REST endpoints. Make calls to Article Service
+
+## Prerequisites
+- Maven 3
+- JDK 11
+
 ## How to build
 ```
 mvn clean install
@@ -23,7 +31,7 @@ facade-service/run_via_maven-unsecure_calls.bat
 ### How to run both services in Docker containers
     docker-compose up
 
-### How to run both services in Docker containers with rebuild service image
+### How to run both services in Docker containers with rebuild of service images
     docker-compose up --build --force-recreate --no-deps
 
 ### Stop and cleanup started containers
@@ -31,17 +39,24 @@ facade-service/run_via_maven-unsecure_calls.bat
 
 ## How to make calls
 
-### Make call to protected Article Service using curl (from _cert folder)
+### Make call to protected Article Service in case of run via bat-scripts
 ```
 curl -v \
-  --cacert andd3dfx.crt \
-  --key andd3dfx.key \
+  --cacert _cert/issued-for-localhost/andd3dfx.crt \
+  --key _cert/issued-for-localhost/andd3dfx.key \
   https://localhost:9082/api/v1/articles
 ```
-Use certs from `issued-for-localhost` folder in case of run via bat-scripts,
-or certs from `issued-for-articles-service` folder in case of run via Docker Compose
 
-### Make call to Facade Service using curl
+### Make call to protected Article Service in case of run via Docker Compose
+```
+curl -v --connect-to articles-service:9082:localhost:9082 \
+  --cacert _cert/issued-for-articles-service/andd3dfx.crt \
+  --key _cert/issued-for-articles-service/andd3dfx.key \
+  https://articles-service:9082/api/v1/articles
+```
+Used `connect-to` flag of curl to satisfy cert condition `CN=article-service`
+
+### Make call to Facade Service
 ```
 curl http://localhost:9081/api/v1/articles
 ```
