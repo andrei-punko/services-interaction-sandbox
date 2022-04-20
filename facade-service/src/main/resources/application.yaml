@@ -1,13 +1,13 @@
 spring:
   application:
-    name: "Service 1"
+    name: "Facade Service"
 
 server:
   port: 9081
 
-service2:
-  url: "https://localhost:9082"
-  articles-url: "${service2.url}/api/v1/articles"
+articles-service:
+  base-url: "https://localhost:9082"
+  articles-url: "${articles-service.base-url}/api/v1/articles"
 
 trust:
   store:

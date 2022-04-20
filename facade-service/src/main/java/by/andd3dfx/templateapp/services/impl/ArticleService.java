@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class ArticleService implements IArticleService {
 
-    @Value("${service2.articles-url}")
+    @Value("${articles-service.articles-url}")
     private String articlesServiceUrl;
 
     private final RestTemplate restTemplate;

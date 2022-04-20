@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: article-db-user
       POSTGRES_PASSWORD: articles-db-password
 
-  service-1:
+  facade-service:
     build: ./facade-service
     restart: always
     ports:
@@ -19,7 +19,7 @@ services:
     depends_on:
       - articles-service
     environment:
-      SERVICE2_URL: 'http://articles-service:9082'
+      ARTICLES-SERVICE_BASE-URL: 'https://articles-service:9082'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9081/health"]
       interval: 1m
@@ -38,7 +38,7 @@ services:
       DB_USER: article-db-user
       DB_PASSWORD: articles-db-password
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9082/health"]
+      test: ["CMD", "curl", "-f", "https://localhost:9082/health"]
       interval: 1m
       timeout: 10s
       retries: 3
