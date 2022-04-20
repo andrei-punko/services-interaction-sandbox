@@ -1,6 +1,5 @@
 
 # Example of services interaction when one of them protected by certificate
-<hr/>
 
 ## Make call to protected article-service using curl (from _cert folder)
 ```
@@ -14,16 +13,14 @@ curl -v \
 ```
 curl http://localhost:9081/api/v1/articles
 ```
-<hr/>
 
 ## Appendix
-<hr/>
 
 ### Generating a Keystore (PKCS12 format) with self-signed certificate
 Based on https://www.baeldung.com/spring-boot-https-self-signed-certificate
 
 ```
-keytool -genkeypair -alias andd3dfx -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore andd3dfx.p12 -validity 365
+keytool -genkeypair -alias andd3dfx -keyalg RSA -keysize 2048 -storetype PKCS12 -keystore andd3dfx.p12 -validity 1825
 ```
 
 <pre>
@@ -41,7 +38,7 @@ What is the name of your State or Province?
 [Unknown]:  Minsk
 What is the two-letter country code for this unit?
 [Unknown]:  BY
-Is CN=Andrei Punko, OU=andrei-dev, O=andrei-dev, L=Minsk, ST=Minsk, C=BY correct?
+Is CN=localhost, OU=andrei-dev, O=andrei-dev, L=Minsk, ST=Minsk, C=BY correct?
 [no]:  yes
 </pre>
 
@@ -56,3 +53,9 @@ openssl pkcs12 -in andd3dfx.p12 -nocerts -out andd3dfx.key
 openssl pkcs12 -in andd3dfx.p12 -clcerts -nokeys -out andd3dfx.crt
 ```
 (used 'andreika' as a password for all steps)
+
+## Start application in Docker container (vs Postgres DB in Docker):
+    docker-compose up
+
+## Start application in Docker container (vs Postgres DB in Docker) with rebuild service image:
+    docker-compose up --build --force-recreate --no-deps
