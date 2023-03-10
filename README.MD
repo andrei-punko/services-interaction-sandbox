@@ -7,7 +7,7 @@
 
 ## Prerequisites
 - Maven 3
-- JDK 11
+- JDK 17
 
 ## How to build
 ```
