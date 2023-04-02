@@ -1,6 +1,8 @@
 
 # Interaction of services when one of them protected by certificate
 
+[![Java CI with Maven](https://github.com/andrei-punko/services-interaction-sandbox/actions/workflows/maven.yml/badge.svg)](https://github.com/andrei-punko/services-interaction-sandbox/actions/workflows/maven.yml)
+
 ## Short Info
 - Article Service with REST endpoints protected by certificate
 - Facade Service with REST endpoints. Make calls to Article Service
