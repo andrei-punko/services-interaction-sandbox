@@ -2,12 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.5.12</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
 
 	<groupId>by.andd3dfx</groupId>
 	<artifactId>articles-service</artifactId>
@@ -16,13 +10,40 @@
 	<name>articles-service</name>
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>17</java.version>
-		<mapstruct.version>1.4.2.Final</mapstruct.version>
+
+		<spring-boot.version>2.7.18</spring-boot.version>
+		<mapstruct.version>1.5.5.Final</mapstruct.version>
 		<lombok.version>1.18.30</lombok.version>
-		<swagger.version>2.9.2</swagger.version>
-		<swagger-annotations.version>1.5.21</swagger-annotations.version>
-		<testcontainers.version>1.15.3</testcontainers.version>
+		<springdoc.version>1.7.0</springdoc.version>
+		<swagger.version>1.6.12</swagger.version>
+		<testcontainers.version>1.19.3</testcontainers.version>
 	</properties>
+
+	<!-- Use BOM (Bill of materials) for JUnit & Spring Boot -->
+	<dependencyManagement>
+		<dependencies>
+			<!-- Import dependency management for Tests -->
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>5.10.1</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+
+			<dependency>
+				<!-- Import dependency management for Spring Boot -->
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${spring-boot.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
@@ -76,34 +97,19 @@
 
 		<!-- Swagger -->
 		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger2</artifactId>
-			<version>${swagger.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>io.swagger</groupId>
-					<artifactId>swagger-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>io.swagger</groupId>
-					<artifactId>swagger-models</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-swagger-ui</artifactId>
-			<version>${swagger.version}</version>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>${springdoc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-annotations</artifactId>
-			<version>${swagger-annotations.version}</version>
+			<version>${swagger.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.swagger</groupId>
 			<artifactId>swagger-models</artifactId>
-			<version>${swagger-annotations.version}</version>
+			<version>${swagger.version}</version>
 		</dependency>
 
 		<dependency>
@@ -130,7 +136,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>org.testcontainers</groupId>
 			<artifactId>postgresql</artifactId>
@@ -153,15 +158,18 @@
 
 	<build>
 		<plugins>
+			<!-- Explicitly set maven-surefire-plugin version, according to: -->
+			<!-- https://stackoverflow.com/questions/54414274/override-the-version-of-maven-surefire-plugin-inherited-from-a-maven-import -->
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.5</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.10.1</version>
+				<version>3.12.1</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -187,33 +195,45 @@
 				</configuration>
 			</plugin>
 
+			<!-- According to: https://www.baeldung.com/spring-boot-fix-the-no-main-manifest-attribute -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>${spring-boot.version}</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.12</version>
+				<version>0.8.11</version>
 				<executions>
-				  <execution>
-					<goals>
-					  <goal>prepare-agent</goal>
-					</goals>
-				  </execution>
-				  <execution>
-					<id>generate-code-coverage-report</id>
-					<phase>test</phase>
-					<goals>
-					  <goal>report</goal>
-					</goals>
-				  </execution>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
 				</executions>
 				<configuration>
 					<excludes>
-						<exclude>**/configs/*</exclude>
-						<exclude>**/dto/*</exclude>
-						<exclude>**/entities/*</exclude>
+						<exclude>**/configs/**</exclude>
+						<exclude>**/dto/**</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
 </project>
