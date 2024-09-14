@@ -4,7 +4,7 @@
 
 ## Prerequisites
 - Maven 3
-- JDK 17
+- JDK 21
 
 ## Overview
 - Article Service with REST endpoints protected by certificate
